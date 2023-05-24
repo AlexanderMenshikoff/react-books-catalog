@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #333;
+  color: wheat;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+}
+
+.recommended-book {
+  font-size: 20px;
+  background-color: #222;
+  text-align: center;
+  padding: 25px 50px;
+}
+
+main {
+  width: 70%;
+  float: left;
+}
+
+.book-grouped-year {
+  text-align: center;
+  margin: 43px 0 50px 0;
+}
+
+.book-block {
+  background-color: #222;
+  padding: 25px 15px 25px 30px;
+  margin: 50px 50px;
+  width: 90%;
+  border-radius: 25px;
+}
+
+.book-name {
+  margin-bottom: 10px;
+}
+
+.book-block__item {
+  margin-bottom: 5px;
+}
+
+.book-block .delete-icon {
+  float: right;
+  color: wheat;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  margin-left: 5px;
+}
+
+.book-block .edit-icon {
+  float: right;
+  color: wheat;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+}
+
+.book-block .delete-icon:hover,
+.book-block .edit-icon:hover {
+  opacity: 0.5;
+}
+
+aside {
+  width: 20%;
+  margin-top: 50px;
+  margin-left: 5%;
+  float: left;
+}
+
+input,
+button {
+  width: 90%;
+  padding: 15px 5%;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  margin-bottom: 10px;
+  border: 0;
+  background-color: #222;
+  color: white;
+  outline: none;
+  border-radius: 15px;
+}
+
+button {
+  width: 100%;
+  cursor: pointer;
+  transition: transform 500ms ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.book__list_container {
+  margin-top: 30px;
+  background: #222;
+  padding: 20px 20px;
+  border-radius: 25px;
+}
+
+.book__list_block-container {
+  margin-top: 10px;
+}
+
+.book__list-item {
+  margin-top: 20px;
+}
