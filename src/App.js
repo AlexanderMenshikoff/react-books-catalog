@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { db } from "./config/firebase";
 import {
   getDocs,
@@ -9,25 +8,31 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import "./styles/main.css";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 
 const App = () => {
   const [bookList, setBookList] = useState([]);
 
-  // New book States
-  const [newBookName, setNewBookName] = useState("");
-  const [newPublicationYear, setNewPublicationYear] = useState(0);
-  const [newAuthorName, setNewAuthorName] = useState("");
-  const [newBookRating, setNewBookRating] = useState(0);
-  const [newBookISBN, setNewBookISBN] = useState("");
-
-  // Update Title State
-  const [updatedBookName, setUpdatedBookName] = useState("");
-  const [updatedPublicationYear, setUpdatedPublicationYear] = useState(0);
-  const [updatedAuthorName, setUpdatedAuthorName] = useState("");
-  const [updatedBookRating, setUpdatedBookRating] = useState(0);
-  const [updatedBookISBN, setUpdatedBookISBN] = useState("");
-
   const booksCollectionRef = collection(db, "books");
+
+  const initialState = {
+    bookName: "",
+    publicationYear: 0,
+    authorList: "",
+    bookRating: 0,
+    ISBN: "",
+  };
+
+  const [data, setData] = useState(initialState);
+
+  let handleInputChange = (event) => {
+    setData({
+      ...data,
+      [event.target.name]: event.target.value,
+    });
+  };
+  console.log(data);
 
   const getBookList = async () => {
     try {
@@ -49,13 +54,7 @@ const App = () => {
 
   const onSubmitBook = async () => {
     try {
-      await addDoc(booksCollectionRef, {
-        bookName: newBookName,
-        publicationYear: newPublicationYear,
-        authorList: newAuthorName,
-        bookRating: newBookRating,
-        ISBN: newBookISBN,
-      });
+      await addDoc(booksCollectionRef, data);
       getBookList();
     } catch (err) {
       console.error(err);
@@ -67,15 +66,9 @@ const App = () => {
     await deleteDoc(bookDoc);
   };
 
-  const updateBookTitle = async (id) => {
+  const updateBook = async (id) => {
     const bookDoc = doc(db, "books", id);
-    await updateDoc(bookDoc, {
-      bookName: updatedBookName,
-      publicationYear: updatedPublicationYear,
-      authorList: updatedAuthorName,
-      bookRating: updatedBookRating,
-      ISBN: updatedBookISBN,
-    });
+    await updateDoc(bookDoc, data);
   };
 
   const maxSortedYearArray = bookList.map((book) => book.publicationYear);
@@ -115,53 +108,107 @@ const App = () => {
 
   return (
     <div className="App">
-      <div>
-        <input
-          placeholder="book title..."
-          onChange={(e) => setNewBookName(e.target.value)}
-        />
-        <input
-          placeholder="Publication year"
-          type="number"
-          onChange={(e) => setNewPublicationYear(Number(e.target.value))}
-        />
-        <input
-          placeholder="Author name"
-          onChange={(e) => setNewAuthorName(e.target.value)}
-        />
-        <input
-          placeholder="book rating"
-          type="number"
-          onChange={(e) => setNewBookRating(Number(e.target.value))}
-        />
-        <input
-          placeholder="ISBN"
-          onChange={(e) => setNewBookISBN(e.target.value)}
-        />
-
-        <button onClick={onSubmitBook}> Submit book</button>
+      <div className="recommended-book">
+        <strong>Рекомендованная книга:</strong> {getRandomGoodBook()}
       </div>
-      <h1>Рекомендованная книга: {getRandomGoodBook()}</h1>
 
-      <div>
+      <main>
         {groupedByYearFilteredArr.map((book) => (
           <div key={book.id}>
-            <h1>{book.year > 0 || book.year ? book.year : "Год неизвестен"}</h1>
+            <h1 className="book-grouped-year">
+              {book.year > 0 || book.year ? book.year : "Год неизвестен"}
+            </h1>
             {book.books.map((el) => {
               return (
-                <div>
-                  <h2>{el.bookName ? el.bookName : "Нет названия"} </h2>
-                  <p>
+                <div className="book-block">
+                  <AiOutlineDelete
+                    onClick={() => deleteBook(el.id)}
+                    className="delete-icon"
+                  />
+                  <AiOutlineEdit
+                    onClick={() => updateBook(el.id)}
+                    className="edit-icon"
+                  />
+
+                  <h2 className="book-name">
+                    {el.bookName ? el.bookName : "Нет названия"}{" "}
+                  </h2>
+                  <p className="book-block__item">
                     Author:{el.authorList ? el.authorList : "Автор неизвестен"}{" "}
                   </p>
-                  <p>
+                  <p className="book-block__item">
                     Book rating:{" "}
                     {el.bookRating || el.bookRating > 0
                       ? el.bookRating
                       : "Нет рейтинга"}
                   </p>
-                  <p>ISBN: {el.ISBN ? el.ISBN : "Нет ISBN"}</p>
-                  <input
+                  <p className="book-block__item">
+                    ISBN: {el.ISBN ? el.ISBN : "Нет ISBN"}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </main>
+      <aside>
+        {/* <form> */}
+        <input
+          placeholder="book title..."
+          onChange={handleInputChange}
+          value={data.bookName}
+          name="bookName"
+        />
+        <input
+          placeholder="Publication year"
+          type="number"
+          onChange={handleInputChange}
+          value={data.publicationYear}
+          name="publicationYear"
+        />
+        <input
+          placeholder="Author name"
+          onChange={handleInputChange}
+          value={data.authorList}
+          name="authorList"
+        />
+        <input
+          placeholder="book rating"
+          type="number"
+          onChange={handleInputChange}
+          value={data.bookRating}
+          name="bookRating"
+        />
+        <input
+          placeholder="ISBN"
+          onChange={handleInputChange}
+          value={data.ISBN}
+          name="ISBN"
+        />
+
+        <button onClick={onSubmitBook}> Submit book</button>
+        {/* </form> */}
+        <div className="book__list_container">
+          <h2>Список книг, доступных в системе:</h2>
+          <div className="book__list_block-container">
+            {bookList.map((el, index) => {
+              return (
+                <div className="book__list-item">{`${index + 1}. "${
+                  el.bookName
+                }"`}</div>
+              );
+            })}
+          </div>
+        </div>
+      </aside>
+    </div>
+  );
+};
+
+export default App;
+
+{
+  /* <input
                     placeholder="new title..."
                     onChange={(e) => setUpdatedBookName(e.target.value)}
                   />
@@ -185,19 +232,5 @@ const App = () => {
                   />
                   <button onClick={() => updateBookTitle(el.id)}>
                     Update Title
-                  </button>
-                  <button onClick={() => deleteBook(el.id)}>
-                    {" "}
-                    Delete book
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default App;
+                  </button> */
+}
