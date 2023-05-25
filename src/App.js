@@ -18,7 +18,7 @@ const App = () => {
 
   const initialState = {
     bookName: "",
-    publicationYear: 0,
+    publicationYear: "",
     authorList: "",
     bookRating: 0,
     ISBN: "",
@@ -32,6 +32,7 @@ const App = () => {
       [event.target.name]: event.target.value,
     });
   };
+
   console.log(data);
 
   const getBookList = async () => {
@@ -54,8 +55,20 @@ const App = () => {
 
   const onSubmitBook = async () => {
     try {
-      await addDoc(booksCollectionRef, data);
-      getBookList();
+      if (!data.bookName) {
+        alert("Книга должна иметь название");
+      } else if (data.bookName.length > 100) {
+        alert("Название книги не может превышать 100 символов");
+      } else if (!data.authorList) {
+        alert("Должен быть хотя бы один автор");
+      } else if (data.publicationYear < 1800) {
+        alert("Год публикации должен быть не раньше 1800 года");
+      } else if (data.bookRating >= 10 || !Number.isInteger(data.bookRating)) {
+        alert("Рейтинг должен быть целым числом от 0 до 10");
+      } else {
+        await addDoc(booksCollectionRef, data);
+        getBookList();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -71,6 +84,10 @@ const App = () => {
     await updateDoc(bookDoc, data);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   const maxSortedYearArray = bookList.map((book) => book.publicationYear);
   maxSortedYearArray.sort((a, b) => b - a);
   const maxSortedYearArrayWithoutRepeats = maxSortedYearArray.filter(
@@ -80,19 +97,21 @@ const App = () => {
     (el) => {
       return {
         year: el,
-        books: bookList.filter((book) => book.publicationYear === el),
+        books: bookList
+          .filter((book) => book.publicationYear === el)
+          .sort((x, y) => x.bookName.localeCompare(y.bookName)),
       };
     }
   );
 
   const getRandomGoodBook = () => {
-    const bookRatingArr = bookList.map((el) => el.bookRating);
+    const bookRatingArr = bookList.map((el) => Number(el.bookRating));
 
     const filteredArray = bookList.filter((elem) => {
       return (
         new Date().getFullYear() - elem.publicationYear >= 3 &&
         elem.publicationYear > 0 &&
-        elem.bookRating === Math.max.apply(null, bookRatingArr)
+        Number(elem.bookRating) === Math.max.apply(null, bookRatingArr)
       );
     });
 
@@ -103,6 +122,7 @@ const App = () => {
     const randomIndex = Math.floor(
       Math.random() * filteredBookNameArray.length
     );
+
     return filteredBookNameArray[randomIndex];
   };
 
@@ -125,19 +145,19 @@ const App = () => {
                     onClick={() => deleteBook(el.id)}
                     className="delete-icon"
                   />
-                  <AiOutlineEdit
+                  {/* <AiOutlineEdit
                     onClick={() => updateBook(el.id)}
                     className="edit-icon"
-                  />
+                  /> */}
 
                   <h2 className="book-name">
                     {el.bookName ? el.bookName : "Нет названия"}{" "}
                   </h2>
                   <p className="book-block__item">
-                    Author:{el.authorList ? el.authorList : "Автор неизвестен"}{" "}
+                    Автор: {el.authorList ? el.authorList : "неизвестен"}{" "}
                   </p>
                   <p className="book-block__item">
-                    Book rating:{" "}
+                    Рейтинг:{" "}
                     {el.bookRating || el.bookRating > 0
                       ? el.bookRating
                       : "Нет рейтинга"}
@@ -152,42 +172,42 @@ const App = () => {
         ))}
       </main>
       <aside>
-        {/* <form> */}
-        <input
-          placeholder="book title..."
-          onChange={handleInputChange}
-          value={data.bookName}
-          name="bookName"
-        />
-        <input
-          placeholder="Publication year"
-          type="number"
-          onChange={handleInputChange}
-          value={data.publicationYear}
-          name="publicationYear"
-        />
-        <input
-          placeholder="Author name"
-          onChange={handleInputChange}
-          value={data.authorList}
-          name="authorList"
-        />
-        <input
-          placeholder="book rating"
-          type="number"
-          onChange={handleInputChange}
-          value={data.bookRating}
-          name="bookRating"
-        />
-        <input
-          placeholder="ISBN"
-          onChange={handleInputChange}
-          value={data.ISBN}
-          name="ISBN"
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            placeholder="Название книги"
+            onChange={handleInputChange}
+            value={data.bookName}
+            name="bookName"
+          />
+          <input
+            placeholder="Год публикации"
+            type="text"
+            onChange={handleInputChange}
+            value={data.publicationYear}
+            name="publicationYear"
+          />
+          <input
+            placeholder="Автор"
+            onChange={handleInputChange}
+            value={data.authorList}
+            name="authorList"
+          />
+          <input
+            placeholder="Рейтинг"
+            type="number"
+            onChange={handleInputChange}
+            value={data.bookRating}
+            name="bookRating"
+          />
+          <input
+            placeholder="ISBN"
+            onChange={handleInputChange}
+            value={data.ISBN}
+            name="ISBN"
+          />
 
-        <button onClick={onSubmitBook}> Submit book</button>
-        {/* </form> */}
+          <button onClick={onSubmitBook}> Submit book</button>
+        </form>
         <div className="book__list_container">
           <h2>Список книг, доступных в системе:</h2>
           <div className="book__list_block-container">
