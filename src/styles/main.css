@@ -88,6 +88,12 @@ button {
   border-radius: 15px;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 button {
   width: 100%;
   cursor: pointer;
