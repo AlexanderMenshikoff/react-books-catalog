@@ -1,4 +1,4 @@
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { db } from "../config/firebase";
 import { deleteDoc, updateDoc, doc } from "firebase/firestore";
 
@@ -6,6 +6,7 @@ const BookDisplay = (props) => {
   const deleteBook = async (id) => {
     const bookDoc = doc(db, "books", id);
     await deleteDoc(bookDoc);
+    props.setBookList(props.bookList.filter((obj) => obj.id !== id));
   };
   // const updateBook = async (id) => {
   //   const bookDoc = doc(db, "books", id);
@@ -28,22 +29,19 @@ const BookDisplay = (props) => {
     }
   );
 
-  return groupedByYearFilteredArr.map((book) => (
-    <div key={book.id}>
+  return groupedByYearFilteredArr.map((book, index) => (
+    <div key={index}>
       <h1 className="book-grouped-year">
         {book.year > 0 || book.year ? book.year : "Год неизвестен"}
       </h1>
       {book.books.map((el) => {
         return (
-          <div className="book-block">
+          <div className="book-block" key={el.id}>
             <AiOutlineDelete
               onClick={() => deleteBook(el.id)}
               className="delete-icon"
             />
-            {/* <AiOutlineEdit
-              onClick={() => updateBook(el.id)}
-              className="edit-icon"
-            /> */}
+            {/* <AiOutlineEdit onClick={() => } className="edit-icon" /> */}
 
             <h2 className="book-name">
               {el.bookName ? el.bookName : "Нет названия"}{" "}
