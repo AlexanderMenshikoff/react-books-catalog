@@ -14,9 +14,9 @@ const App = () => {
 
   const initialState = {
     bookName: "",
-    publicationYear: 0,
+    publicationYear: "",
     authorList: "",
-    bookRating: 0,
+    bookRating: "",
     ISBN: "",
   };
 
@@ -45,7 +45,7 @@ const App = () => {
       <RandomBook bookList={bookList} />
 
       <main>
-        <BookDisplay bookList={bookList} />
+        <BookDisplay bookList={bookList} setBookList={setBookList} />
       </main>
       <aside>
         <Form
@@ -58,6 +58,7 @@ const App = () => {
           data={data}
           booksCollectionRef={booksCollectionRef}
           getBookList={getBookList}
+          initialState={initialState}
         />
         <AvailableBookList bookList={bookList} />
       </aside>
