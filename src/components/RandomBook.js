@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
+
 const RandomBook = (props) => {
+  const [random, setRandom] = useState("");
+
   const getRandomGoodBook = () => {
     const bookRatingArr = props.bookList.map((el) => Number(el.bookRating));
 
@@ -20,9 +24,15 @@ const RandomBook = (props) => {
 
     return filteredBookNameArray[randomIndex];
   };
+
+  useEffect(() => {
+    if (!props.bookList.length) return;
+
+    setRandom(getRandomGoodBook(), [props.bookList]);
+  });
   return (
     <div className="recommended-book">
-      <strong>Рекомендованная книга:</strong> {getRandomGoodBook()}
+      <strong>Рекомендованная книга:</strong> {random}
     </div>
   );
 };
