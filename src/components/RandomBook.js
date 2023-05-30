@@ -28,8 +28,8 @@ const RandomBook = (props) => {
   useEffect(() => {
     if (!props.bookList.length) return;
 
-    setRandom(getRandomGoodBook(), [props.bookList]);
-  });
+    setRandom(getRandomGoodBook());
+  }, [props.bookList]);
   return (
     <div className="recommended-book">
       <strong>Рекомендованная книга:</strong> {random}
