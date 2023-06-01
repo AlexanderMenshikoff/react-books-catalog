@@ -24,7 +24,7 @@ const Form = (props) => {
       } else if (props.publicationYear > new Date().getFullYear()) {
         alert("Год публикации должен быть не позже текущего года.");
       } else if (
-        props.bookRating >= 10 ||
+        props.bookRating > 10 ||
         props.bookRating.includes(".") ||
         props.bookRating.includes(",")
       ) {
