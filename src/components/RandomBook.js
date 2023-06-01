@@ -4,17 +4,21 @@ const RandomBook = (props) => {
   const [random, setRandom] = useState("");
 
   const getRandomGoodBook = () => {
-    const bookRatingArr = props.bookList.map((el) => Number(el.bookRating));
-
     const filteredArray = props.bookList.filter((elem) => {
       return (
         new Date().getFullYear() - elem.publicationYear >= 3 &&
         elem.publicationYear > 0 &&
-        Number(elem.bookRating) === Math.max.apply(null, bookRatingArr)
+        elem.bookRating > 0
       );
     });
 
-    const filteredBookNameArray = filteredArray.map((el) => {
+    const bookRatingArr = filteredArray.map((el) => Number(el.bookRating));
+
+    const maxRatingBooksFilteredArray = filteredArray.filter(
+      (elem) => Number(elem.bookRating) === Math.max.apply(null, bookRatingArr)
+    );
+
+    const filteredBookNameArray = maxRatingBooksFilteredArray.map((el) => {
       return el.bookName;
     });
 
@@ -30,6 +34,7 @@ const RandomBook = (props) => {
 
     setRandom(getRandomGoodBook());
   }, [props.bookList]);
+
   return (
     <div className="recommended-book">
       <strong>Рекомендованная книга:</strong> {random}
