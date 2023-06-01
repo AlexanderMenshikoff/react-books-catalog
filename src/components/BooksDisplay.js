@@ -8,10 +8,6 @@ const BookDisplay = (props) => {
     await deleteDoc(bookDoc);
     props.setBookList(props.bookList.filter((obj) => obj.id !== id));
   };
-  // const updateBook = async (id) => {
-  //   const bookDoc = doc(db, "books", id);
-  //   await updateDoc(bookDoc, data);
-  // };
 
   const maxSortedYearArray = props.bookList.map((book) => book.publicationYear);
   maxSortedYearArray.sort((a, b) => b - a);
@@ -41,7 +37,6 @@ const BookDisplay = (props) => {
               onClick={() => deleteBook(el.id)}
               className="delete-icon"
             />
-            {/* <AiOutlineEdit onClick={() => } className="edit-icon" /> */}
 
             <h2 className="book-name">
               {el.bookName ? el.bookName : "Нет названия"}{" "}
