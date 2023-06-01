@@ -67,31 +67,3 @@ const App = () => {
 };
 
 export default App;
-
-{
-  /* <input
-                    placeholder="new title..."
-                    onChange={(e) => setUpdatedBookName(e.target.value)}
-                  />
-                  <input
-                    placeholder="new publication year"
-                    onChange={(e) =>
-                      setUpdatedPublicationYear(Number(e.target.value))
-                    }
-                  />
-                  <input
-                    placeholder="new author name"
-                    onChange={(e) => setUpdatedAuthorName(e.target.value)}
-                  />
-                  <input
-                    placeholder="new book rating"
-                    onChange={(e) => setUpdatedBookRating(e.target.value)}
-                  />
-                  <input
-                    placeholder="new ISBN"
-                    onChange={(e) => setUpdatedBookISBN(e.target.value)}
-                  />
-                  <button onClick={() => updateBookTitle(el.id)}>
-                    Update Title
-                  </button> */
-}
